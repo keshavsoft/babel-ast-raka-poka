@@ -1,29 +1,30 @@
 import fs from "node:fs";
 import { parse } from "@babel/parser";
 
-const filePath = "./app.js";
 
-const source = fs.readFileSync(filePath, "utf8");
-
-const ast = parse(source, {
-    sourceType: "module"
-});
-
-// for (const node of ast.program.body) {
-//     console.log(node);
-// };
+const filePath =
+    "./jsFiles/app.js";
 
 
-// for (const node of ast.program.body) {
-//     console.log({
-//         type: node.type,
-//         start: node.start,
-//         end: node.end,
-//         text: source.slice(node.start, node.end)
-//     });
-// };
+const source =
+    fs.readFileSync(
+        filePath,
+        "utf8"
+    );
+
+
+const ast =
+    parse(source, {
+        sourceType: "module"
+    });
+
+
 fs.writeFileSync(
     "./ast-output.json",
-    JSON.stringify(ast, null, 2),
+    JSON.stringify(
+        ast,
+        null,
+        2
+    ),
     "utf8"
 );
