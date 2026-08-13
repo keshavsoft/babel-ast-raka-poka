@@ -1,5 +1,4 @@
 import { exec } from "child_process";
-
 import dotenv from "dotenv";
 
 dotenv.config({
@@ -13,34 +12,19 @@ import {
 } from "./api/routes.js";
 
 import setupRoutes from "./routes.js";
-
 import startServer from "./server.js";
 
-
-const app =
-    express();
-
+const app = express();
 
 setupRoutes(app);
 
-
-const {
-    port
-} =
-    startServer(app);
-
+const { port } = startServer(app);
 
 app.use(
     "/api",
     routerFromapi
 );
 
-
-if (
-    process.env.OPEN_BROWSER ===
-    "true"
-) {
-    // exec(
-    //     `start http://localhost:${port}/v28/quotations/index.html`
-    // );
+if (process.env.OPEN_BROWSER === "true") {
+    // exec(`start http://localhost:${port}/v28/quotations/index.html`);
 }

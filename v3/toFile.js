@@ -2,8 +2,7 @@ import fs from "node:fs";
 import { parse } from "@babel/parser";
 
 
-const filePath =
-    "./jsFiles/app.js";
+const filePath = "./jsFiles/app.js";
 
 
 const source =
