@@ -13,4 +13,10 @@ const ast = parse(source, {
 
 const results = processAst(ast, source);
 
-console.log(results);
+fs.writeFileSync(
+    "./run-output.json",
+    JSON.stringify(results, null, 2),
+    "utf8"
+);
+
+console.log("AST processing completed.");
