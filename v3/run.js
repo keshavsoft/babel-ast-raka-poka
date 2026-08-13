@@ -1,21 +1,31 @@
 import fs from "node:fs";
 import { parse } from "@babel/parser";
 
-import {
-    processAst
-} from "./astHandlers.js";
+import handleImportDeclaration
+    from "./nodeHandlers/ImportDeclaration.js";
+
+import handleVariableDeclaration
+    from "./nodeHandlers/VariableDeclaration.js";
+
+import handleExpressionStatement
+    from "./nodeHandlers/ExpressionStatement.js";
+
+import handleIfStatement
+    from "./nodeHandlers/IfStatement.js";
 
 
-const filePath =
-    "./jsFiles/app.js";
+const handlers = {
+    ImportDeclaration: handleImportDeclaration,
+    VariableDeclaration: handleVariableDeclaration,
+    ExpressionStatement: handleExpressionStatement,
+    IfStatement: handleIfStatement
+};
 
+
+const filePath = "./jsFiles/app.js";
 
 const source =
-    fs.readFileSync(
-        filePath,
-        "utf8"
-    );
-
+    fs.readFileSync(filePath, "utf8");
 
 const ast =
     parse(source, {
@@ -23,11 +33,14 @@ const ast =
     });
 
 
-const results =
-    processAst(
-        ast,
-        source
+for (const node of ast.program.body) {
+    const handler = handlers[node.type];
+
+    if (!handler) {
+        continue;
+    }
+
+    console.log(
+        handler(node, source)
     );
-
-
-console.log(results);
+}
