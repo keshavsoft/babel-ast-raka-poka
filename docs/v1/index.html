@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Babel AST — Raka Poka</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --background: #f5f7fb;
+            --surface: #ffffff;
+            --primary: #111827;
+            --secondary: #4b5563;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --code-background: #111827;
+            --code-text: #e5e7eb;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--primary);
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        header {
+            padding: 70px 20px;
+            background: var(--primary);
+            color: #ffffff;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-bottom: 12px;
+            font-size: 42px;
+        }
+
+        header p {
+            max-width: 720px;
+            margin: 0 auto;
+            color: #d1d5db;
+            font-size: 18px;
+        }
+
+        main {
+            width: min(1100px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 60px 0;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        section h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        section > p {
+            max-width: 850px;
+            margin-bottom: 16px;
+            color: var(--secondary);
+        }
+
+        .story {
+            padding: 32px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .story p {
+            margin-bottom: 16px;
+            color: var(--secondary);
+        }
+
+        .story p:last-child {
+            margin-bottom: 0;
+        }
+
+        .flow {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .flow-step {
+            flex: 1;
+            padding: 22px 15px;
+            background: #f9fafb;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .flow-step strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .arrow {
+            color: var(--muted);
+            font-size: 24px;
+        }
+
+        .node-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .node {
+            padding: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .node h3 {
+            margin-bottom: 10px;
+        }
+
+        .node p {
+            color: var(--secondary);
+        }
+
+        .node code {
+            padding: 2px 6px;
+            background: #f3f4f6;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+        }
+
+        .possibilities {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .possibility {
+            padding: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .possibility h3 {
+            margin-bottom: 10px;
+        }
+
+        .possibility p {
+            color: var(--secondary);
+        }
+
+        pre {
+            margin: 20px 0;
+            padding: 24px;
+            overflow-x: auto;
+            background: var(--code-background);
+            border-radius: 10px;
+            color: var(--code-text);
+            font-family: Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        code {
+            font-family: Consolas, monospace;
+        }
+
+        footer {
+            padding: 30px 20px;
+            background: var(--primary);
+            color: #9ca3af;
+            text-align: center;
+        }
+
+        @media (max-width: 800px) {
+            header h1 {
+                font-size: 34px;
+            }
+
+            .flow {
+                flex-direction: column;
+            }
+
+            .flow-step {
+                width: 100%;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+            }
+
+            .node-list,
+            .possibilities {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            main {
+                width: min(100% - 24px, 1100px);
+                padding: 40px 0;
+            }
+
+            header {
+                padding: 50px 15px;
+            }
+
+            header h1 {
+                font-size: 28px;
+            }
+
+            header p {
+                font-size: 16px;
+            }
+
+            .story,
+            .flow {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Babel AST — Raka Poka</h1>
+
+        <p>
+            Understanding JavaScript as structured data and exploring
+            what can be built with Abstract Syntax Trees.
+        </p>
+    </header>
+
+    <main>
+
+        <section>
+            <div class="story">
+
+                <h2>The Story</h2>
+
+                <p>
+                    Imagine a developer working with a large JavaScript
+                    project. Understanding every import, variable,
+                    expression, and condition manually can become
+                    difficult.
+                </p>
+
+                <p>
+                    What if the program could understand the structure
+                    of the JavaScript code by itself?
+                </p>
+
+                <p>
+                    This is where an Abstract Syntax Tree, or AST,
+                    becomes useful.
+                </p>
+
+                <p>
+                    This repository explores how JavaScript source code
+                    can be parsed using Babel Parser and converted into
+                    a structured representation that can be inspected
+                    and processed programmatically.
+                </p>
+
+            </div>
+        </section>
+
+        <section>
+            <h2>From Source Code to AST</h2>
+
+            <div class="flow">
+
+                <div class="flow-step">
+                    <strong>Source Code</strong>
+                    app.js
+                </div>
+
+                <div class="arrow">→</div>
+
+                <div class="flow-step">
+                    <strong>Babel Parser</strong>
+                    Parse source
+                </div>
+
+                <div class="arrow">→</div>
+
+                <div class="flow-step">
+                    <strong>AST</strong>
+                    Structured code
+                </div>
+
+            </div>
+        </section>
+
+        <section>
+            <h2>Understanding Node Types</h2>
+
+            <p>
+                Every AST node has a <code>node.type</code> that describes
+                the JavaScript structure represented by that node.
+            </p>
+
+            <div class="node-list">
+
+                <div class="node">
+                    <h3>ImportDeclaration</h3>
+
+                    <p>
+                        Represents JavaScript import statements and can
+                        provide information about modules and imported
+                        names.
+                    </p>
+                </div>
+
+                <div class="node">
+                    <h3>VariableDeclaration</h3>
+
+                    <p>
+                        Represents variable declarations created with
+                        <code>const</code>, <code>let</code>, or
+                        <code>var</code>.
+                    </p>
+                </div>
+
+                <div class="node">
+                    <h3>ExpressionStatement</h3>
+
+                    <p>
+                        Represents executable expressions such as
+                        function calls.
+                    </p>
+                </div>
+
+                <div class="node">
+                    <h3>IfStatement</h3>
+
+                    <p>
+                        Represents conditional logic in JavaScript
+                        source code.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <section>
+            <h2>What Can We Do With It?</h2>
+
+            <div class="possibilities">
+
+                <div class="possibility">
+                    <h3>Code Analysis</h3>
+
+                    <p>
+                        Inspect JavaScript source code and understand
+                        its structure programmatically.
+                    </p>
+                </div>
+
+                <div class="possibility">
+                    <h3>Dependency Analysis</h3>
+
+                    <p>
+                        Analyze imports and understand relationships
+                        between modules and files.
+                    </p>
+                </div>
+
+                <div class="possibility">
+                    <h3>Documentation</h3>
+
+                    <p>
+                        Extract useful code information and generate
+                        structured documentation.
+                    </p>
+                </div>
+
+                <div class="possibility">
+                    <h3>Code Navigation</h3>
+
+                    <p>
+                        Build symbol lists, references, structure views,
+                        and other navigation features.
+                    </p>
+                </div>
+
+                <div class="possibility">
+                    <h3>Code Transformation</h3>
+
+                    <p>
+                        Analyze and transform JavaScript structures
+                        programmatically.
+                    </p>
+                </div>
+
+                <div class="possibility">
+                    <h3>Developer Tools</h3>
+
+                    <p>
+                        Use AST information as the foundation for
+                        custom developer and static analysis tools.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <section>
+            <h2>A Simple Example</h2>
+
+            <p>
+                Consider the following JavaScript source:
+            </p>
+
+            <pre><code>import express from "express";
+
+const app = express();
+
+app.listen(3000);</code></pre>
+
+            <p>
+                Babel Parser can identify the different structures:
+            </p>
+
+            <pre><code>Program
+├── ImportDeclaration
+├── VariableDeclaration
+└── ExpressionStatement</code></pre>
+
+            <p>
+                These structures can then be processed by other tools
+                for analysis, visualization, documentation, or
+                transformation.
+            </p>
+        </section>
+
+        <section>
+            <div class="story">
+
+                <h2>The Bigger Picture</h2>
+
+                <p>
+                    The goal of this repository is not only to generate
+                    an AST. It is to explore what becomes possible when
+                    JavaScript source code is treated as structured data.
+                </p>
+
+                <p>
+                    Once the structure is available, it can become the
+                    foundation for developer tools such as code
+                    analyzers, dependency graphs, documentation
+                    generators, migration utilities, and code
+                    navigation systems.
+                </p>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        Babel AST — Raka Poka
+    </footer>
+
+</body>
+</html>
