@@ -1,0 +1,58 @@
+[
+  {
+    "type": "ImportDeclaration",
+    "text": "import express from \"express\";",
+    "raka": "express",
+    "poka": "express",
+    "routePath": null,
+    "routeHandler": null
+  },
+  {
+    "type": "ImportDeclaration",
+    "text": "import { router as routerFromv1 } from \"./v1/routes.js\";",
+    "raka": "./v1/routes.js",
+    "poka": "routerFromv1",
+    "routePath": null,
+    "routeHandler": null
+  },
+  {
+    "type": "ImportDeclaration",
+    "text": "import { router as routerFromv2 } from \"./v2/routes.js\";",
+    "raka": "./v2/routes.js",
+    "poka": "routerFromv2",
+    "routePath": null,
+    "routeHandler": null
+  },
+  {
+    "type": "VariableDeclaration",
+    "text": "const router = express.Router();",
+    "raka": null,
+    "poka": "router",
+    "routePath": null,
+    "routeHandler": null
+  },
+  {
+    "type": "ExpressionStatement",
+    "text": "router.use(\"/v1\", routerFromv1);",
+    "raka": null,
+    "poka": null,
+    "routePath": "/v1",
+    "routeHandler": "routerFromv1"
+  },
+  {
+    "type": "ExpressionStatement",
+    "text": "router.use(\"/v2\", routerFromv2);",
+    "raka": null,
+    "poka": null,
+    "routePath": "/v2",
+    "routeHandler": "routerFromv2"
+  },
+  {
+    "type": "ExportNamedDeclaration",
+    "text": "export { router };",
+    "raka": null,
+    "poka": "router",
+    "routePath": null,
+    "routeHandler": null
+  }
+]

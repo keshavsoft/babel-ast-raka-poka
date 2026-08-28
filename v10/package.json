@@ -1,0 +1,8 @@
+{
+  "name": "babel-ast-v10",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@babel/parser": "^8.0.4"
+  }
+}
