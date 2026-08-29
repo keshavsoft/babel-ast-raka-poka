@@ -8,6 +8,27 @@
   <b>A practical Node.js playground for learning, inspecting, generating, and transforming JavaScript Abstract Syntax Trees with Babel.</b>
 </p>
 
+<p>
+  <a href="https://github.com/keshavsoft/babel-ast-raka-poka">
+    <img src="https://img.shields.io/badge/GitHub-babel--ast--raka--poka-181717?style=for-the-badge&logo=github" alt="GitHub">
+  </a>
+  <a href="https://keshavsoft.github.io/babel-ast-raka-poka/">
+    <img src="https://img.shields.io/badge/📖%20Documentation-GitHub%20Pages-6366f1?style=for-the-badge" alt="Documentation">
+  </a>
+  <a href="https://www.npmjs.com/search?q=babel-ast-raka-poka">
+    <img src="https://img.shields.io/badge/📦%20NPM-Search-ea4aaa?style=for-the-badge&logo=npm" alt="NPM">
+  </a>
+  <img src="https://img.shields.io/badge/Node.js-ES%20Modules-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Babel-AST-F9DC3E?style=for-the-badge&logo=babel&logoColor=111827" alt="Babel">
+</p>
+
+<p>
+  <a href="https://keshavsoft.github.io/babel-ast-raka-poka/"><b>📖 Open Documentation</b></a>
+  &nbsp;•&nbsp;
+  <a href="https://github.com/keshavsoft/babel-ast-raka-poka"><b>◇ View Repository</b></a>
+  &nbsp;•&nbsp;
+  <a href="https://www.npmjs.com/search?q=babel-ast-raka-poka"><b>📦 Open NPM</b></a>
+</p>
 
 </div>
 
@@ -219,6 +240,58 @@ The current `package.json` uses ES modules and declares `@babel/parser`, `@babel
 
 ---
 
+# 📂 Project Structure
+
+The repository contains both **root-level experiments** and **versioned experiments**.
+
+```text
+babel-ast-raka-poka/
+│
+├── app.js
+├── app copy.js
+├── app1.js
+│
+├── run.js
+├── toFile.js
+├── create.js
+├── insert.js
+│
+├── ast-output.json
+│
+├── package.json
+├── package-lock.json
+├── README.md
+│
+├── docs/
+│   ├── index.html
+│   └── v1/
+│       └── index.html
+│
+├── v1/
+│   ├── create.js
+│   ├── insert.js
+│   ├── routes.js
+│   └── run.js
+│
+├── v2/
+│   ├── app.js
+│   ├── run.js
+│   └── toFile.js
+│
+├── v3/
+│   ├── astHandlers.js
+│   ├── jsFiles/
+│   └── nodeHandlers/
+│
+├── ...
+│
+└── v10/
+    ├── output.json
+    ├── package.json
+    ├── routes.js
+    └── run.js
+```
+
 The repository tree contains root scripts, documentation, generated AST JSON, and multiple versioned experiments. fileciteturn30file0
 
 ---
@@ -371,6 +444,19 @@ Babel's AST specification defines nodes such as `Program`, `ImportDeclaration`, 
 
 ---
 
+# 📍 Source Positions
+
+AST nodes also carry source-location information.
+
+A node can provide positions such as:
+
+```text
+start
+end
+loc.start
+loc.end
+```
+
 This makes it possible to connect:
 
 ```text
@@ -415,9 +501,105 @@ New JavaScript
 
 ---
 
+# 🚀 Getting Started
+
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/keshavsoft/babel-ast-raka-poka.git
+cd babel-ast-raka-poka
+```
+
+## 2. Install dependencies
+
+```bash
+npm install
+```
+
+The project is configured as an ES-module package:
+
+```json
+{
+  "type": "module"
+}
+```
+
+and currently declares:
+
+```text
+@babel/parser
+@babel/types
+@babel/generator
+```
+
+as dependencies. fileciteturn28file0
+
+## 3. Run a root experiment
+
+For example:
+
+```bash
+node run.js
+```
+
+## 4. Generate AST JSON
+
+```bash
+node toFile.js
+```
+
+Then inspect:
+
+```text
+ast-output.json
+```
+
+## 5. Explore the versions
+
+```bash
+cd v1
+```
+
+or explore later version folders such as:
+
+```text
+v2
+v3
+...
+v10
+```
+
 Each version represents another step in the experimentation and design process.
 
 ---
+
+# 🧪 Learning Path
+
+If you are new to AST, follow this order:
+
+```text
+01. Understand JavaScript source
+          ↓
+02. Learn what an AST is
+          ↓
+03. Run run.js
+          ↓
+04. Inspect ast.program.body
+          ↓
+05. Understand node.type
+          ↓
+06. Run toFile.js
+          ↓
+07. Study ast-output.json
+          ↓
+08. Learn @babel/types
+          ↓
+09. Learn @babel/generator
+          ↓
+10. Study insert.js
+          ↓
+11. Explore v1 → v10
+```
 
 This turns the repository from a collection of scripts into a progressive AST learning path.
 
@@ -556,6 +738,19 @@ The repository can eventually grow into a larger code-processing platform.
 
 Possible future applications:
 
+- AST visualizer
+- Dependency graph generator
+- Code documentation generator
+- Static analysis
+- Custom lint rules
+- Automated refactoring
+- JavaScript migration tools
+- API route discovery
+- Code metrics
+- Developer productivity tools
+- VS Code extensions
+- AI-assisted code understanding
+
 ---
 
 # 🧭 Versioned Experiments
@@ -598,6 +793,30 @@ The version folders should therefore be viewed as **learning and development mil
 - [Babel Generator](https://github.com/babel/babel/tree/main/packages/babel-generator)
 - [Babel Types](https://github.com/babel/babel/tree/main/packages/babel-types)
 - [Babel Parser Documentation](https://babeljs.io/docs/babel-parser)
+
+---
+
+# 📖 Project Documentation
+
+### 🌐 GitHub Pages
+
+**[📖 Open the full interactive documentation →](https://keshavsoft.github.io/babel-ast-raka-poka/)**
+
+The documentation site is located inside:
+
+```text
+docs/index.html
+```
+
+The repository currently includes that documentation file in its `docs/` folder. fileciteturn30file0
+
+### ◇ GitHub Repository
+
+**[Open `keshavsoft/babel-ast-raka-poka` →](https://github.com/keshavsoft/babel-ast-raka-poka)**
+
+### 📦 NPM
+
+**[Search `babel-ast-raka-poka` on NPM →](https://www.npmjs.com/search?q=babel-ast-raka-poka)**
 
 ---
 
