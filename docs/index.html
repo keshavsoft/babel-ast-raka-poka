@@ -1,485 +1,1054 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Babel AST — Raka Poka</title>
+  <meta name="description" content="Beautiful documentation portal for the babel-ast-raka-poka repository.">
+  <style>
+    :root {
+      --bg: #070b14;
+      --panel: #101827;
+      --panel2: #141f31;
+      --line: rgba(255, 255, 255, .09);
+      --text: #f5f7fb;
+      --muted: #98a6bb;
+      --purple: #8b5cf6;
+      --cyan: #22d3ee;
+      --green: #34d399;
+      --amber: #fbbf24;
+      --shadow: 0 28px 80px rgba(0, 0, 0, .32)
+    }
 
-    <title>Babel AST — Raka Poka</title>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    html {
+      scroll-behavior: smooth
+    }
 
-        :root {
-            --background: #f5f7fb;
-            --surface: #ffffff;
-            --primary: #111827;
-            --secondary: #4b5563;
-            --muted: #6b7280;
-            --border: #e5e7eb;
-            --code-background: #111827;
-            --code-text: #e5e7eb;
-        }
+    body {
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+      background: radial-gradient(circle at 10% 5%, rgba(139, 92, 246, .18), transparent 28%), radial-gradient(circle at 90% 15%, rgba(34, 211, 238, .11), transparent 25%), linear-gradient(180deg, #070b14, #09121f);
+      line-height: 1.65
+    }
 
-        body {
-            min-height: 100vh;
-            background: var(--background);
-            color: var(--primary);
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-        }
+    body:before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .16;
+      background-image: linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px);
+      background-size: 44px 44px
+    }
 
-        header {
-            padding: 70px 20px;
-            background: var(--primary);
-            color: #ffffff;
-            text-align: center;
-        }
+    a {
+      color: inherit
+    }
 
-        header h1 {
-            margin-bottom: 12px;
-            font-size: 42px;
-        }
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: auto
+    }
 
-        header p {
-            max-width: 720px;
-            margin: 0 auto;
-            color: #d1d5db;
-            font-size: 18px;
-        }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: rgba(7, 11, 20, .8);
+      backdrop-filter: blur(18px)
+    }
 
-        main {
-            width: min(1100px, calc(100% - 40px));
-            margin: 0 auto;
-            padding: 60px 0;
-        }
+    .nav {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
 
-        section {
-            margin-bottom: 60px;
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none
+    }
 
-        section h2 {
-            margin-bottom: 20px;
-            font-size: 28px;
-        }
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      box-shadow: 0 10px 28px rgba(139, 92, 246, .25)
+    }
 
-        section > p {
-            max-width: 850px;
-            margin-bottom: 16px;
-            color: var(--secondary);
-        }
+    .brand strong {
+      display: block;
+      font-size: .96rem
+    }
 
-        .story {
-            padding: 32px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
-        }
+    .brand span {
+      display: block;
+      color: var(--muted);
+      font-size: .66rem
+    }
 
-        .story p {
-            margin-bottom: 16px;
-            color: var(--secondary);
-        }
+    .links {
+      display: flex;
+      gap: 6px
+    }
 
-        .story p:last-child {
-            margin-bottom: 0;
-        }
+    .links a {
+      padding: 8px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: .71rem
+    }
 
-        .flow {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 24px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-        }
+    .links a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, .06)
+    }
 
-        .flow-step {
-            flex: 1;
-            padding: 22px 15px;
-            background: #f9fafb;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            text-align: center;
-        }
+    .hero {
+      text-align: center;
+      padding: 92px 0 72px
+    }
 
-        .flow-step strong {
-            display: block;
-            margin-bottom: 6px;
-        }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid rgba(139, 92, 246, .3);
+      border-radius: 999px;
+      background: rgba(139, 92, 246, .08);
+      color: #c4b5fd;
+      font-size: .71rem;
+      font-weight: 800
+    }
 
-        .arrow {
-            color: var(--muted);
-            font-size: 24px;
-        }
+    .pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 12px rgba(52, 211, 153, .8)
+    }
 
-        .node-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-        }
+    h1 {
+      max-width: 900px;
+      margin: 22px auto 0;
+      font-family: Outfit, Inter, sans-serif;
+      font-size: clamp(3rem, 7vw, 5.8rem);
+      line-height: .98;
+      letter-spacing: -4px
+    }
 
-        .node {
-            padding: 24px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-        }
+    .gradient {
+      background: linear-gradient(135deg, #fff 20%, #c4b5fd 55%, #67e8f9 92%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent
+    }
 
-        .node h3 {
-            margin-bottom: 10px;
-        }
+    .hero p {
+      max-width: 760px;
+      margin: 23px auto 0;
+      color: var(--muted);
+      font-size: .95rem
+    }
 
-        .node p {
-            color: var(--secondary);
-        }
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 27px
+    }
 
-        .node code {
-            padding: 2px 6px;
-            background: #f3f4f6;
-            border-radius: 4px;
-            font-family: Consolas, monospace;
-        }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      border: 1px solid var(--line);
+      font-size: .74rem;
+      font-weight: 800;
+      transition: .2s
+    }
 
-        .possibilities {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-        }
+    .btn:hover {
+      transform: translateY(-2px)
+    }
 
-        .possibility {
-            padding: 24px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-        }
+    .primary {
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--purple), #6366f1);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, .25)
+    }
 
-        .possibility h3 {
-            margin-bottom: 10px;
-        }
+    .ghost {
+      background: rgba(255, 255, 255, .035);
+      color: #cbd5e1
+    }
 
-        .possibility p {
-            color: var(--secondary);
-        }
+    .editor {
+      max-width: 940px;
+      margin: 48px auto 0;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      overflow: hidden;
+      background: #090e16;
+      box-shadow: var(--shadow)
+    }
 
-        pre {
-            margin: 20px 0;
-            padding: 24px;
-            overflow-x: auto;
-            background: var(--code-background);
-            border-radius: 10px;
-            color: var(--code-text);
-            font-family: Consolas, monospace;
-            font-size: 14px;
-            line-height: 1.7;
-        }
+    .editor-head {
+      height: 45px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 13px;
+      background: #0e1520;
+      border-bottom: 1px solid var(--line)
+    }
 
-        code {
-            font-family: Consolas, monospace;
-        }
+    .ed {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%
+    }
 
-        footer {
-            padding: 30px 20px;
-            background: var(--primary);
-            color: #9ca3af;
-            text-align: center;
-        }
+    .r {
+      background: #ff5f57
+    }
 
-        @media (max-width: 800px) {
-            header h1 {
-                font-size: 34px;
-            }
+    .y {
+      background: #febc2e
+    }
 
-            .flow {
-                flex-direction: column;
-            }
+    .g {
+      background: #28c840
+    }
 
-            .flow-step {
-                width: 100%;
-            }
+    .tab {
+      margin-left: 12px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px 7px 0 0;
+      background: #151e2a;
+      font: 600 .66rem monospace;
+      color: #dbe4ef
+    }
 
-            .arrow {
-                transform: rotate(90deg);
-            }
+    .editor-body {
+      display: grid;
+      grid-template-columns: 45px 1fr 245px;
+      min-height: 305px
+    }
 
-            .node-list,
-            .possibilities {
-                grid-template-columns: 1fr;
-            }
-        }
+    .lines {
+      padding: 18px 9px;
+      text-align: right;
+      color: #4d5a6f;
+      background: #090e15;
+      border-right: 1px solid rgba(255, 255, 255, .05);
+      font: .67rem/1.9 monospace
+    }
 
-        @media (max-width: 500px) {
-            main {
-                width: min(100% - 24px, 1100px);
-                padding: 40px 0;
-            }
+    .source {
+      padding: 18px 19px;
+      color: #d9e1ed;
+      font: .71rem/1.95 monospace
+    }
 
-            header {
-                padding: 50px 15px;
-            }
+    .kw {
+      color: #c084fc
+    }
 
-            header h1 {
-                font-size: 28px;
-            }
+    .fn {
+      color: #67e8f9
+    }
 
-            header p {
-                font-size: 16px;
-            }
+    .str {
+      color: #86efac
+    }
 
-            .story,
-            .flow {
-                padding: 22px;
-            }
-        }
-    </style>
+    .num {
+      color: #fbbf24
+    }
+
+    .cm {
+      color: #64748b;
+      font-style: italic
+    }
+
+    .inspector {
+      padding: 18px;
+      border-left: 1px solid var(--line);
+      background: #0d141f
+    }
+
+    .inspector h4 {
+      font: 700 .72rem Outfit, sans-serif;
+      margin-bottom: 12px
+    }
+
+    .tree {
+      font: .65rem/1.95 monospace;
+      color: #aab7c8
+    }
+
+    .tree b {
+      color: #c4b5fd
+    }
+
+    .pad {
+      padding-left: 14px
+    }
+
+    section {
+      padding: 76px 0
+    }
+
+    .eyebrow {
+      color: #a78bfa;
+      text-transform: uppercase;
+      letter-spacing: 1.7px;
+      font-size: .65rem;
+      font-weight: 900
+    }
+
+    .heading {
+      max-width: 760px
+    }
+
+    .heading h2 {
+      margin-top: 7px;
+      font: 700 clamp(2rem, 4vw, 3rem)/1.08 Outfit, sans-serif;
+      letter-spacing: -1.3px
+    }
+
+    .heading p {
+      margin-top: 11px;
+      color: var(--muted);
+      font-size: .87rem
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 17px
+    }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .015));
+      box-shadow: 0 16px 50px rgba(0, 0, 0, .12)
+    }
+
+    .story {
+      padding: 28px
+    }
+
+    .story h3 {
+      font: 700 1.2rem Outfit, sans-serif
+    }
+
+    .story p {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: .81rem
+    }
+
+    .quote {
+      margin-top: 20px;
+      padding: 15px;
+      border-left: 3px solid var(--purple);
+      border-radius: 0 9px 9px 0;
+      background: rgba(139, 92, 246, .07);
+      color: #ddd6fe;
+      font-size: .76rem
+    }
+
+    .pipeline {
+      padding: 23px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px
+    }
+
+    .p {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .025)
+    }
+
+    .pi {
+      width: 29px;
+      height: 29px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(139, 92, 246, .13);
+      color: #c4b5fd;
+      font-weight: 900;
+      font-size: .66rem
+    }
+
+    .p strong {
+      display: block;
+      font-size: .74rem
+    }
+
+    .p span {
+      display: block;
+      color: var(--muted);
+      font-size: .62rem
+    }
+
+    .down {
+      text-align: center;
+      color: #526078
+    }
+
+    .feature {
+      padding: 21px;
+      min-height: 170px
+    }
+
+    .icon {
+      width: 39px;
+      height: 39px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, .2), rgba(34, 211, 238, .1));
+      border: 1px solid var(--line);
+      margin-bottom: 14px
+    }
+
+    .feature h3 {
+      font: 600 .98rem Outfit, sans-serif
+    }
+
+    .feature p {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: .73rem
+    }
+
+    .arch {
+      padding: 25px
+    }
+
+    .arch pre,
+    .code pre {
+      margin-top: 17px;
+      padding: 18px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #080d14;
+      color: #d1dae7;
+      font: .7rem/1.85 monospace
+    }
+
+    .code {
+      padding: 25px
+    }
+
+    .files {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px
+    }
+
+    .file {
+      padding: 17px
+    }
+
+    .file strong {
+      font: 600 .8rem Outfit, sans-serif
+    }
+
+    .file span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: .68rem
+    }
+
+    .timeline {
+      display: grid;
+      gap: 11px
+    }
+
+    .version {
+      display: grid;
+      grid-template-columns: 58px 100px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, .023)
+    }
+
+    .vno {
+      width: 41px;
+      height: 41px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: rgba(139, 92, 246, .11);
+      color: #c4b5fd;
+      font-size: .65rem;
+      font-weight: 900
+    }
+
+    .version strong {
+      padding-top: 8px;
+      font: 600 .79rem Outfit, sans-serif
+    }
+
+    .version p {
+      color: var(--muted);
+      font-size: .7rem
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 13px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, .023)
+    }
+
+    .sn {
+      width: 39px;
+      height: 39px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(34, 211, 238, .1);
+      color: #67e8f9;
+      font-size: .67rem;
+      font-weight: 900
+    }
+
+    .step h3 {
+      font: 600 .84rem Outfit, sans-serif
+    }
+
+    .step p {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: .69rem
+    }
+
+    .cmd {
+      color: #86efac
+    }
+
+    footer {
+      padding: 48px 0 32px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+      color: var(--muted)
+    }
+
+    footer strong {
+      color: #fff;
+      font-family: Outfit, sans-serif
+    }
+
+    footer p {
+      font-size: .67rem;
+      margin-top: 6px
+    }
+
+    @media(max-width:860px) {
+      .links {
+        display: none
+      }
+
+      .grid2 {
+        grid-template-columns: 1fr
+      }
+
+      .grid3 {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .editor-body {
+        grid-template-columns: 42px 1fr
+      }
+
+      .inspector {
+        display: none
+      }
+    }
+
+    @media(max-width:560px) {
+      .wrap {
+        width: min(100% - 22px, 1120px)
+      }
+
+      .grid3,
+      .files {
+        grid-template-columns: 1fr
+      }
+
+      section {
+        padding: 58px 0
+      }
+
+      h1 {
+        letter-spacing: -2.2px
+      }
+
+      .version {
+        grid-template-columns: 48px 1fr
+      }
+
+      .version strong {
+        display: none
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <nav>
+    <div class="wrap nav">
+      <a class="brand" href="#top">
+        <div class="logo">AST</div>
+        <div><strong>babel-ast-raka-poka</strong><span>JavaScript AST exploration</span></div>
+      </a>
+      <div class="links"><a href="#story">Story</a><a href="#flow">Flow</a><a href="#tools">Tools</a><a
+          href="#code">Code</a><a href="#run">Run</a></div>
+    </div>
+  </nav>
 
-    <header>
-        <h1>Babel AST — Raka Poka</h1>
-
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div class="badge"><span class="pulse"></span>Babel Parser · AST · Code Transformation</div>
+        <h1>Read JavaScript as <span class="gradient">structure.</span></h1>
         <p>
-            Understanding JavaScript as structured data and exploring
-            what can be built with Abstract Syntax Trees.
+          <b>babel-ast-raka-poka</b> is a practical Node.js project that learns how to turn JavaScript source
+          into an Abstract Syntax Tree, inspect its nodes, generate new syntax, and insert generated code using real
+          source positions.
         </p>
-    </header>
+        <div class="actions">
+          <a class="btn primary" href="https://github.com/keshavsoft/babel-ast-raka-poka" target="_blank">◇ Open
+            GitHub</a>
+          <a class="btn ghost" href="https://github.com/keshavsoft/babel-ast-raka-poka/tree/main/docs"
+            target="_blank">📖 Open Docs Folder</a>
+          <a class="btn ghost" href="#run">▶ Run Example</a>
+        </div>
 
-    <main>
-
-        <section>
-            <div class="story">
-
-                <h2>The Story</h2>
-
-                <p>
-                    Imagine a developer working with a large JavaScript
-                    project. Understanding every import, variable,
-                    expression, and condition manually can become
-                    difficult.
-                </p>
-
-                <p>
-                    What if the program could understand the structure
-                    of the JavaScript code by itself?
-                </p>
-
-                <p>
-                    This is where an Abstract Syntax Tree, or AST,
-                    becomes useful.
-                </p>
-
-                <p>
-                    This repository explores how JavaScript source code
-                    can be parsed using Babel Parser and converted into
-                    a structured representation that can be inspected
-                    and processed programmatically.
-                </p>
-
+        <div class="editor">
+          <div class="editor-head"><span class="ed r"></span><span class="ed y"></span><span class="ed g"></span><span
+              class="tab">app.js</span></div>
+          <div class="editor-body">
+            <div class="lines">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9</div>
+            <div class="source">
+              <span class="kw">import</span> express <span class="kw">from</span> <span
+                class="str">"express"</span>;<br><br>
+              <span class="kw">const</span> app = <span class="fn">express</span>();<br><br>
+              app.<span class="fn">get</span>(<span class="str">"/showAll"</span>, (<span class="var">req</span>, <span
+                class="var">res</span>) =&gt; {<br>
+              &nbsp;&nbsp;res.<span class="fn">json</span>({ message: <span class="str">"Hello"</span> });<br>
+              });<br><br>
+              <span class="cm">// source → AST → inspect → transform</span>
             </div>
-        </section>
-
-        <section>
-            <h2>From Source Code to AST</h2>
-
-            <div class="flow">
-
-                <div class="flow-step">
-                    <strong>Source Code</strong>
-                    app.js
-                </div>
-
-                <div class="arrow">→</div>
-
-                <div class="flow-step">
-                    <strong>Babel Parser</strong>
-                    Parse source
-                </div>
-
-                <div class="arrow">→</div>
-
-                <div class="flow-step">
-                    <strong>AST</strong>
-                    Structured code
-                </div>
-
+            <div class="inspector">
+              <h4>AST: Program Body</h4>
+              <div class="tree">
+                <div><b>▾ Program</b></div>
+                <div class="pad">▾ ImportDeclaration</div>
+                <div class="pad">▾ VariableDeclaration</div>
+                <div class="pad">▾ ExpressionStatement</div>
+                <div class="pad">▾ CallExpression</div>
+              </div>
             </div>
-        </section>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <section>
-            <h2>Understanding Node Types</h2>
+    <section id="story">
+      <div class="wrap">
+        <div class="heading">
+          <div class="eyebrow">01 · Story</div>
+          <h2>Why AST instead of plain text?</h2>
+          <p>
+            Searching a JavaScript file for strings can find text, but it does not reliably tell a tool whether that
+            text is an import,
+            declaration, function call, expression, or another language construct. An AST provides that structure.
+          </p>
+        </div>
 
+        <div class="grid2" style="margin-top:28px">
+          <article class="card story">
+            <h3>The repository's learning path</h3>
             <p>
-                Every AST node has a <code>node.type</code> that describes
-                the JavaScript structure represented by that node.
+              The project starts by reading a JavaScript file with Node.js. Babel Parser converts that source into a
+              tree.
+              The code then walks the top-level program nodes and prints useful properties such as <code>type</code>,
+              <code>start</code>, <code>end</code>, original source text, imported names and variable identifiers.
             </p>
-
-            <div class="node-list">
-
-                <div class="node">
-                    <h3>ImportDeclaration</h3>
-
-                    <p>
-                        Represents JavaScript import statements and can
-                        provide information about modules and imported
-                        names.
-                    </p>
-                </div>
-
-                <div class="node">
-                    <h3>VariableDeclaration</h3>
-
-                    <p>
-                        Represents variable declarations created with
-                        <code>const</code>, <code>let</code>, or
-                        <code>var</code>.
-                    </p>
-                </div>
-
-                <div class="node">
-                    <h3>ExpressionStatement</h3>
-
-                    <p>
-                        Represents executable expressions such as
-                        function calls.
-                    </p>
-                </div>
-
-                <div class="node">
-                    <h3>IfStatement</h3>
-
-                    <p>
-                        Represents conditional logic in JavaScript
-                        source code.
-                    </p>
-                </div>
-
-            </div>
-        </section>
-
-        <section>
-            <h2>What Can We Do With It?</h2>
-
-            <div class="possibilities">
-
-                <div class="possibility">
-                    <h3>Code Analysis</h3>
-
-                    <p>
-                        Inspect JavaScript source code and understand
-                        its structure programmatically.
-                    </p>
-                </div>
-
-                <div class="possibility">
-                    <h3>Dependency Analysis</h3>
-
-                    <p>
-                        Analyze imports and understand relationships
-                        between modules and files.
-                    </p>
-                </div>
-
-                <div class="possibility">
-                    <h3>Documentation</h3>
-
-                    <p>
-                        Extract useful code information and generate
-                        structured documentation.
-                    </p>
-                </div>
-
-                <div class="possibility">
-                    <h3>Code Navigation</h3>
-
-                    <p>
-                        Build symbol lists, references, structure views,
-                        and other navigation features.
-                    </p>
-                </div>
-
-                <div class="possibility">
-                    <h3>Code Transformation</h3>
-
-                    <p>
-                        Analyze and transform JavaScript structures
-                        programmatically.
-                    </p>
-                </div>
-
-                <div class="possibility">
-                    <h3>Developer Tools</h3>
-
-                    <p>
-                        Use AST information as the foundation for
-                        custom developer and static analysis tools.
-                    </p>
-                </div>
-
-            </div>
-        </section>
-
-        <section>
-            <h2>A Simple Example</h2>
-
             <p>
-                Consider the following JavaScript source:
+              The transformation side goes one step further: <code>@babel/types</code> creates a real AST node,
+              <code>@babel/generator</code> turns that node into JavaScript, and the node's source position can be used
+              to insert the generated statement.
             </p>
+            <div class="quote"><b>Think of the project as:</b> read → parse → understand → generate → insert.</div>
+          </article>
 
-            <pre><code>import express from "express";
-
-const app = express();
-
-app.listen(3000);</code></pre>
-
-            <p>
-                Babel Parser can identify the different structures:
-            </p>
-
-            <pre><code>Program
-├── ImportDeclaration
-├── VariableDeclaration
-└── ExpressionStatement</code></pre>
-
-            <p>
-                These structures can then be processed by other tools
-                for analysis, visualization, documentation, or
-                transformation.
-            </p>
-        </section>
-
-        <section>
-            <div class="story">
-
-                <h2>The Bigger Picture</h2>
-
-                <p>
-                    The goal of this repository is not only to generate
-                    an AST. It is to explore what becomes possible when
-                    JavaScript source code is treated as structured data.
-                </p>
-
-                <p>
-                    Once the structure is available, it can become the
-                    foundation for developer tools such as code
-                    analyzers, dependency graphs, documentation
-                    generators, migration utilities, and code
-                    navigation systems.
-                </p>
-
+          <div class="card pipeline">
+            <div class="p">
+              <div class="pi">01</div>
+              <div><strong>Read source</strong><span>fs.readFileSync()</span></div>
             </div>
-        </section>
+            <div class="down">↓</div>
+            <div class="p">
+              <div class="pi">02</div>
+              <div><strong>Parse</strong><span>@babel/parser</span></div>
+            </div>
+            <div class="down">↓</div>
+            <div class="p">
+              <div class="pi">03</div>
+              <div><strong>Inspect AST</strong><span>ast.program.body</span></div>
+            </div>
+            <div class="down">↓</div>
+            <div class="p">
+              <div class="pi">04</div>
+              <div><strong>Generate / Insert</strong><span>@babel/types + generator</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    </main>
+    <section id="tools">
+      <div class="wrap">
+        <div class="heading">
+          <div class="eyebrow">02 · Capabilities</div>
+          <h2>What this repository teaches</h2>
+          <p>These are the concrete building blocks visible in the project.</p>
+        </div>
+        <div class="grid3" style="margin-top:28px">
+          <div class="card feature">
+            <div class="icon">◇</div>
+            <h3>Parsing</h3>
+            <p>Convert JavaScript source text into Babel's AST using ES-module parsing.</p>
+          </div>
+          <div class="card feature">
+            <div class="icon">⌕</div>
+            <h3>Node inspection</h3>
+            <p>Walk program statements and inspect type, positions, text, imports and declarations.</p>
+          </div>
+          <div class="card feature">
+            <div class="icon">▣</div>
+            <h3>AST JSON</h3>
+            <p>Serialize the complete AST to <code>ast-output.json</code> for inspection.</p>
+          </div>
+          <div class="card feature">
+            <div class="icon">＋</div>
+            <h3>AST construction</h3>
+            <p>Create valid syntax nodes with <code>@babel/types</code>.</p>
+          </div>
+          <div class="card feature">
+            <div class="icon">→</div>
+            <h3>Code generation</h3>
+            <p>Turn an AST node back into JavaScript using <code>@babel/generator</code>.</p>
+          </div>
+          <div class="card feature">
+            <div class="icon">↳</div>
+            <h3>Source insertion</h3>
+            <p>Use node source positions to place generated code into an existing file.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <footer>
-        Babel AST — Raka Poka
-    </footer>
+    <section id="code">
+      <div class="wrap">
+        <div class="heading">
+          <div class="eyebrow">03 · Code story</div>
+          <h2>The important scripts</h2>
+          <p>These files show the repository's main concepts with very little code.</p>
+        </div>
 
+        <div class="grid2" style="margin-top:28px">
+          <div class="card code">
+            <h3 style="font:700 1rem Outfit,sans-serif;">run.js — inspect nodes</h3>
+            <pre>import fs from "node:fs";
+import { parse } from "@babel/parser";
+
+const source = fs.readFileSync("./app.js", "utf8");
+
+const ast = parse(source, {
+  sourceType: "module"
+});
+
+for (const node of ast.program.body) {
+  console.log({
+    type: node.type,
+    start: node.start,
+    end: node.end,
+    text: source.slice(node.start, node.end)
+  });
+}</pre>
+          </div>
+
+          <div class="card code">
+            <h3 style="font:700 1rem Outfit,sans-serif;">toFile.js — save the AST</h3>
+            <pre>const ast = parse(source, {
+  sourceType: "module"
+});
+
+fs.writeFileSync(
+  "./ast-output.json",
+  JSON.stringify(ast, null, 2),
+  "utf8"
+);</pre>
+          </div>
+
+          <div class="card code">
+            <h3 style="font:700 1rem Outfit,sans-serif;">create.js — build a node</h3>
+            <pre>const newImport = t.importDeclaration(
+  [
+    t.importDefaultSpecifier(
+      t.identifier("endpoints")
+    )
+  ],
+  t.stringLiteral(inJsFileName)
+);
+
+const code = generate(newImport).code;</pre>
+          </div>
+
+          <div class="card code">
+            <h3 style="font:700 1rem Outfit,sans-serif;">insert.js — use AST position</h3>
+            <pre>const statement = ast.program.body[1];
+
+const insertPosition = statement.start;
+
+const result =
+  source.slice(0, insertPosition) +
+  newLine +
+  source.slice(insertPosition);
+
+fs.writeFileSync(filePath, result);</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="heading">
+          <div class="eyebrow">04 · Architecture</div>
+          <h2>Two sides of the project</h2>
+        </div>
+        <div class="card arch" style="margin-top:28px">
+          <pre>
+                         JavaScript Source
+                                │
+                                ▼
+                         @babel/parser
+                                │
+                                ▼
+                              AST
+                                │
+               ┌────────────────┴────────────────┐
+               │                                 │
+               ▼                                 ▼
+         ANALYSIS PATH                    TRANSFORMATION PATH
+               │                                 │
+      node.type / positions               @babel/types
+      source.slice(...)                    create AST node
+               │                                 │
+               ▼                                 ▼
+        Console / JSON                    @babel/generator
+                                                │
+                                                ▼
+                                         Generated JavaScript
+                                                │
+                                                ▼
+                                           Insert / Write
+</pre>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="heading">
+          <div class="eyebrow">05 · Repository map</div>
+          <h2>What the files are doing</h2>
+        </div>
+        <div class="files" style="margin-top:28px">
+          <div class="card file"><strong>app.js</strong><span>Sample JavaScript source used by the root analysis
+              scripts.</span></div>
+          <div class="card file"><strong>run.js</strong><span>Parses <code>app.js</code> and prints selected information
+              from each top-level AST node.</span></div>
+          <div class="card file"><strong>toFile.js</strong><span>Parses <code>app.js</code> and writes the full tree to
+              <code>ast-output.json</code>.</span></div>
+          <div class="card file"><strong>insert.js</strong><span>Demonstrates source insertion based on an AST
+              statement's <code>start</code> position.</span></div>
+          <div class="card file"><strong>create.js</strong><span>Builds an <code>ImportDeclaration</code> with Babel
+              types and generates source with Babel generator.</span></div>
+          <div class="card file"><strong>ast-output.json</strong><span>Generated JSON representation of the parsed
+              AST.</span></div>
+          <div class="card file"><strong>package.json</strong><span>ES-module package using Babel parser, types and
+              generator dependencies.</span></div>
+          <div class="card file"><strong>v1 … v10</strong><span>Versioned experiments showing the evolution of AST
+              exploration and code-processing ideas.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="versions">
+      <div class="wrap">
+        <div class="heading">
+          <div class="eyebrow">06 · Versions</div>
+          <h2>Why are there many version folders?</h2>
+          <p>The repository is an evolving AST laboratory. The versions preserve different experiments and approaches.
+          </p>
+        </div>
+        <div class="timeline" style="margin-top:27px">
+          <div class="version">
+            <div class="vno">v1</div><strong>Foundation</strong>
+            <p>Concrete AST-based insertion experiment using parsed statements and generated imports.</p>
+          </div>
+          <div class="version">
+            <div class="vno">v2+</div><strong>Exploration</strong>
+            <p>Additional experiments around parsing and handling AST node structures.</p>
+          </div>
+          <div class="version">
+            <div class="vno">v5</div><strong>Inspection</strong>
+            <p>Documented example of reading source, parsing it and printing extracted node information.</p>
+          </div>
+          <div class="version">
+            <div class="vno">v10</div><strong>Continuation</strong>
+            <p>Later versioned work continues the exploration rather than replacing the learning history.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="run">
+      <div class="wrap">
+        <div class="heading">
+          <div class="eyebrow">07 · Run it</div>
+          <h2>Try the repository yourself</h2>
+          <p>Start with the root scripts, then explore the version folders.</p>
+        </div>
+        <div class="timeline" style="margin-top:28px">
+          <div class="step">
+            <div class="sn">01</div>
+            <div>
+              <h3>Clone</h3>
+              <p>Download the repository and enter it.</p>
+              <div class="code">
+                <pre><span class="cmd">git clone</span> https://github.com/keshavsoft/babel-ast-raka-poka.git
+<span class="cmd">cd</span> babel-ast-raka-poka</pre>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="sn">02</div>
+            <div>
+              <h3>Install</h3>
+              <p>The package declares Babel parser, generator and types.</p>
+              <div class="code">
+                <pre><span class="cmd">npm install</span></pre>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="sn">03</div>
+            <div>
+              <h3>Inspect the AST</h3>
+              <p>Read <code>app.js</code>, parse it and print top-level node information.</p>
+              <div class="code">
+                <pre><span class="cmd">node run.js</span></pre>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="sn">04</div>
+            <div>
+              <h3>Export JSON</h3>
+              <p>Create a readable AST file.</p>
+              <div class="code">
+                <pre><span class="cmd">node toFile.js</span></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="card story" style="text-align:center;padding:46px 28px">
+          <div class="eyebrow">08 · The bigger idea</div>
+          <h2>AST turns code into something a program can reason about.</h2>
+          <p style="max-width:720px;margin:14px auto 0">
+            Once JavaScript is represented as structured nodes, the same foundation can support code analysis,
+            dependency inspection, documentation generation, refactoring, migration scripts, API route automation and
+            other developer tools.
+          </p>
+          <div class="actions">
+            <a class="btn primary" href="https://github.com/keshavsoft/babel-ast-raka-poka" target="_blank">◇ Explore
+              GitHub</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <strong>◇ Babel AST — Raka Poka</strong>
+      <p>Parse · Inspect · Generate · Transform · Automate</p>
+    </div>
+  </footer>
 </body>
+
 </html>
