@@ -650,7 +650,7 @@
 <body>
   <nav>
     <div class="wrap nav">
-      <a class="brand" href="#top">
+      <a class="brand" href="./index.html">
         <div class="logo">AST</div>
         <div><strong>babel-ast-raka-poka</strong><span>JavaScript AST exploration</span></div>
       </a>
@@ -660,66 +660,44 @@
   </nav>
 
   <main id="top">
-    <section class="hero">
-      <div class="wrap">
-        <div class="badge"><span class="pulse"></span>Babel Parser · AST · Code Transformation</div>
-        <h1>Read JavaScript as <span class="gradient">structure.</span></h1>
-        <p>
-          <b>babel-ast-raka-poka</b> is a practical Node.js project that learns how to turn JavaScript source
-          into an Abstract Syntax Tree, inspect its nodes, generate new syntax, and insert generated code using real
-          source positions.
-        </p>
-        <div class="actions">
-          <a class="btn primary" href="https://github.com/keshavsoft/babel-ast-raka-poka" target="_blank">◇ Open
-            GitHub</a>
-          <a class="btn ghost" href="https://github.com/keshavsoft/babel-ast-raka-poka/tree/main/docs"
-            target="_blank">📖 Open Docs Folder</a>
-          <a class="btn ghost" href="#run">▶ Run Example</a>
-        </div>
 
-        <div class="editor">
-          <div class="editor-head"><span class="ed r"></span><span class="ed y"></span><span class="ed g"></span><span
-              class="tab">app.js</span></div>
-          <div class="editor-body">
-            <div class="lines">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9</div>
-            <div class="source">
-              <span class="kw">import</span> express <span class="kw">from</span> <span
-                class="str">"express"</span>;<br><br>
-              <span class="kw">const</span> app = <span class="fn">express</span>();<br><br>
-              app.<span class="fn">get</span>(<span class="str">"/showAll"</span>, (<span class="var">req</span>, <span
-                class="var">res</span>) =&gt; {<br>
-              &nbsp;&nbsp;res.<span class="fn">json</span>({ message: <span class="str">"Hello"</span> });<br>
-              });<br><br>
-              <span class="cm">// source → AST → inspect → transform</span>
-            </div>
-            <div class="inspector">
-              <h4>AST: Program Body</h4>
-              <div class="tree">
-                <div><b>▾ Program</b></div>
-                <div class="pad">▾ ImportDeclaration</div>
-                <div class="pad">▾ VariableDeclaration</div>
-                <div class="pad">▾ ExpressionStatement</div>
-                <div class="pad">▾ CallExpression</div>
-              </div>
-            </div>
+    <section id="tools">
+      <div class="wrap">
+        <div class="heading">
+          <div class="eyebrow">Capabilities</div>
+          <h2>What this repository teaches</h2>
+          <p>These are the concrete building blocks visible in the project.</p>
+        </div>
+        <div class="grid3" style="margin-top:28px">
+          <div class="card feature">
+            <div class="icon">◇</div>
+            <h3>Parsing</h3>
+            <p>Convert JavaScript source text into Babel's AST using ES-module parsing.</p>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="wrap">
-        <div class="card story" style="text-align:center;padding:46px 28px">
-          <div class="eyebrow"> The bigger idea</div>
-          <h2>AST turns code into something a program can reason about.</h2>
-          <p style="max-width:720px;margin:14px auto 0">
-            Once JavaScript is represented as structured nodes, the same foundation can support code analysis,
-            dependency inspection, documentation generation, refactoring, migration scripts, API route automation and
-            other developer tools.
-          </p>
-          <div class="actions">
-            <a class="btn primary" href="https://github.com/keshavsoft/babel-ast-raka-poka" target="_blank">◇ Explore
-              GitHub</a>
+          <div class="card feature">
+            <div class="icon">⌕</div>
+            <h3>Node inspection</h3>
+            <p>Walk program statements and inspect type, positions, text, imports and declarations.</p>
+          </div>
+          <div class="card feature">
+            <div class="icon">▣</div>
+            <h3>AST JSON</h3>
+            <p>Serialize the complete AST to <code>ast-output.json</code> for inspection.</p>
+          </div>
+          <div class="card feature">
+            <div class="icon">＋</div>
+            <h3>AST construction</h3>
+            <p>Create valid syntax nodes with <code>@babel/types</code>.</p>
+          </div>
+          <div class="card feature">
+            <div class="icon">→</div>
+            <h3>Code generation</h3>
+            <p>Turn an AST node back into JavaScript using <code>@babel/generator</code>.</p>
+          </div>
+          <div class="card feature">
+            <div class="icon">↳</div>
+            <h3>Source insertion</h3>
+            <p>Use node source positions to place generated code into an existing file.</p>
           </div>
         </div>
       </div>
