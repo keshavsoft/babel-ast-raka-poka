@@ -650,7 +650,7 @@
 <body>
   <nav>
     <div class="wrap nav">
-      <a class="brand" href="#top">
+      <a class="brand" href="./index.html">
         <div class="logo">AST</div>
         <div><strong>babel-ast-raka-poka</strong><span>JavaScript AST exploration</span></div>
       </a>
@@ -660,48 +660,77 @@
   </nav>
 
   <main id="top">
-    <section class="hero">
+   
+
+    <section id="code">
       <div class="wrap">
-        <div class="badge"><span class="pulse"></span>Babel Parser · AST · Code Transformation</div>
-        <h1>Read JavaScript as <span class="gradient">structure.</span></h1>
-        <p>
-          <b>babel-ast-raka-poka</b> is a practical Node.js project that learns how to turn JavaScript source
-          into an Abstract Syntax Tree, inspect its nodes, generate new syntax, and insert generated code using real
-          source positions.
-        </p>
-        <div class="actions">
-          <a class="btn primary" href="https://github.com/keshavsoft/babel-ast-raka-poka" target="_blank">◇ Open
-            GitHub</a>
-          <a class="btn ghost" href="https://github.com/keshavsoft/babel-ast-raka-poka/tree/main/docs"
-            target="_blank">📖 Open Docs Folder</a>
-          <a class="btn ghost" href="#run">▶ Run Example</a>
+        <div class="heading">
+          <div class="eyebrow">Code story</div>
+          <h2>The important scripts</h2>
+          <p>These files show the repository's main concepts with very little code.</p>
         </div>
 
-        <div class="editor">
-          <div class="editor-head"><span class="ed r"></span><span class="ed y"></span><span class="ed g"></span><span
-              class="tab">app.js</span></div>
-          <div class="editor-body">
-            <div class="lines">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9</div>
-            <div class="source">
-              <span class="kw">import</span> express <span class="kw">from</span> <span
-                class="str">"express"</span>;<br><br>
-              <span class="kw">const</span> app = <span class="fn">express</span>();<br><br>
-              app.<span class="fn">get</span>(<span class="str">"/showAll"</span>, (<span class="var">req</span>, <span
-                class="var">res</span>) =&gt; {<br>
-              &nbsp;&nbsp;res.<span class="fn">json</span>({ message: <span class="str">"Hello"</span> });<br>
-              });<br><br>
-              <span class="cm">// source → AST → inspect → transform</span>
-            </div>
-            <div class="inspector">
-              <h4>AST: Program Body</h4>
-              <div class="tree">
-                <div><b>▾ Program</b></div>
-                <div class="pad">▾ ImportDeclaration</div>
-                <div class="pad">▾ VariableDeclaration</div>
-                <div class="pad">▾ ExpressionStatement</div>
-                <div class="pad">▾ CallExpression</div>
-              </div>
-            </div>
+        <div class="grid2" style="margin-top:28px">
+          <div class="card code">
+            <h3 style="font:700 1rem Outfit,sans-serif;">run.js — inspect nodes</h3>
+            <pre>import fs from "node:fs";
+import { parse } from "@babel/parser";
+
+const source = fs.readFileSync("./app.js", "utf8");
+
+const ast = parse(source, {
+  sourceType: "module"
+});
+
+for (const node of ast.program.body) {
+  console.log({
+    type: node.type,
+    start: node.start,
+    end: node.end,
+    text: source.slice(node.start, node.end)
+  });
+}</pre>
+          </div>
+
+          <div class="card code">
+            <h3 style="font:700 1rem Outfit,sans-serif;">toFile.js — save the AST</h3>
+            <pre>const ast = parse(source, {
+  sourceType: "module"
+});
+
+fs.writeFileSync(
+  "./ast-output.json",
+  JSON.stringify(ast, null, 2),
+  "utf8"
+);</pre>
+          </div>
+
+          <div class="card code">
+            <h3 style="font:700 1rem Outfit,sans-serif;">create.js — build a node</h3>
+            <pre>const newImport = t.importDeclaration(
+  [
+    t.importDefaultSpecifier(
+      t.identifier("endpoints")
+    )
+  ],
+  t.stringLiteral(inJsFileName)
+);
+
+const code = generate(newImport).code;</pre>
+          </div>
+
+          <div class="card code">
+            <h3 style="font:700 1rem Outfit,sans-serif;">insert.js — use AST position</h3>
+            <pre>const statement = ast.program.body[1];
+
+const insertPosition = statement.start;
+
+const result =
+  source.slice(0, insertPosition) +
+  newLine +
+  source.slice(insertPosition);
+
+fs.writeFileSync(filePath, result);</pre>
           </div>
         </div>
       </div>
@@ -709,18 +738,37 @@
 
     <section>
       <div class="wrap">
-        <div class="card story" style="text-align:center;padding:46px 28px">
-          <div class="eyebrow"> The bigger idea</div>
-          <h2>AST turns code into something a program can reason about.</h2>
-          <p style="max-width:720px;margin:14px auto 0">
-            Once JavaScript is represented as structured nodes, the same foundation can support code analysis,
-            dependency inspection, documentation generation, refactoring, migration scripts, API route automation and
-            other developer tools.
-          </p>
-          <div class="actions">
-            <a class="btn primary" href="https://github.com/keshavsoft/babel-ast-raka-poka" target="_blank">◇ Explore
-              GitHub</a>
-          </div>
+        <div class="heading">
+          <div class="eyebrow">Architecture</div>
+          <h2>Two sides of the project</h2>
+        </div>
+        <div class="card arch" style="margin-top:28px">
+          <pre>
+                         JavaScript Source
+                                │
+                                ▼
+                         @babel/parser
+                                │
+                                ▼
+                              AST
+                                │
+               ┌────────────────┴────────────────┐
+               │                                 │
+               ▼                                 ▼
+         ANALYSIS PATH                    TRANSFORMATION PATH
+               │                                 │
+      node.type / positions               @babel/types
+      source.slice(...)                    create AST node
+               │                                 │
+               ▼                                 ▼
+        Console / JSON                    @babel/generator
+                                                │
+                                                ▼
+                                         Generated JavaScript
+                                                │
+                                                ▼
+                                           Insert / Write
+</pre>
         </div>
       </div>
     </section>

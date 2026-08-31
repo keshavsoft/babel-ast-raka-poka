@@ -650,7 +650,7 @@
 <body>
   <nav>
     <div class="wrap nav">
-      <a class="brand" href="#top">
+      <a class="brand" href="./index.html">
         <div class="logo">AST</div>
         <div><strong>babel-ast-raka-poka</strong><span>JavaScript AST exploration</span></div>
       </a>
@@ -660,66 +660,55 @@
   </nav>
 
   <main id="top">
-    <section class="hero">
+    <section id="story">
       <div class="wrap">
-        <div class="badge"><span class="pulse"></span>Babel Parser · AST · Code Transformation</div>
-        <h1>Read JavaScript as <span class="gradient">structure.</span></h1>
-        <p>
-          <b>babel-ast-raka-poka</b> is a practical Node.js project that learns how to turn JavaScript source
-          into an Abstract Syntax Tree, inspect its nodes, generate new syntax, and insert generated code using real
-          source positions.
-        </p>
-        <div class="actions">
-          <a class="btn primary" href="https://github.com/keshavsoft/babel-ast-raka-poka" target="_blank">◇ Open
-            GitHub</a>
-          <a class="btn ghost" href="https://github.com/keshavsoft/babel-ast-raka-poka/tree/main/docs"
-            target="_blank">📖 Open Docs Folder</a>
-          <a class="btn ghost" href="#run">▶ Run Example</a>
-        </div>
-
-        <div class="editor">
-          <div class="editor-head"><span class="ed r"></span><span class="ed y"></span><span class="ed g"></span><span
-              class="tab">app.js</span></div>
-          <div class="editor-body">
-            <div class="lines">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9</div>
-            <div class="source">
-              <span class="kw">import</span> express <span class="kw">from</span> <span
-                class="str">"express"</span>;<br><br>
-              <span class="kw">const</span> app = <span class="fn">express</span>();<br><br>
-              app.<span class="fn">get</span>(<span class="str">"/showAll"</span>, (<span class="var">req</span>, <span
-                class="var">res</span>) =&gt; {<br>
-              &nbsp;&nbsp;res.<span class="fn">json</span>({ message: <span class="str">"Hello"</span> });<br>
-              });<br><br>
-              <span class="cm">// source → AST → inspect → transform</span>
-            </div>
-            <div class="inspector">
-              <h4>AST: Program Body</h4>
-              <div class="tree">
-                <div><b>▾ Program</b></div>
-                <div class="pad">▾ ImportDeclaration</div>
-                <div class="pad">▾ VariableDeclaration</div>
-                <div class="pad">▾ ExpressionStatement</div>
-                <div class="pad">▾ CallExpression</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="wrap">
-        <div class="card story" style="text-align:center;padding:46px 28px">
-          <div class="eyebrow"> The bigger idea</div>
-          <h2>AST turns code into something a program can reason about.</h2>
-          <p style="max-width:720px;margin:14px auto 0">
-            Once JavaScript is represented as structured nodes, the same foundation can support code analysis,
-            dependency inspection, documentation generation, refactoring, migration scripts, API route automation and
-            other developer tools.
+        <div class="heading">
+          <div class="eyebrow">Story</div>
+          <h2>Why AST instead of plain text?</h2>
+          <p>
+            Searching a JavaScript file for strings can find text, but it does not reliably tell a tool whether that
+            text is an import,
+            declaration, function call, expression, or another language construct. An AST provides that structure.
           </p>
-          <div class="actions">
-            <a class="btn primary" href="https://github.com/keshavsoft/babel-ast-raka-poka" target="_blank">◇ Explore
-              GitHub</a>
+        </div>
+
+        <div class="grid2" style="margin-top:28px">
+          <article class="card story">
+            <h3>The repository's learning path</h3>
+            <p>
+              The project starts by reading a JavaScript file with Node.js. Babel Parser converts that source into a
+              tree.
+              The code then walks the top-level program nodes and prints useful properties such as <code>type</code>,
+              <code>start</code>, <code>end</code>, original source text, imported names and variable identifiers.
+            </p>
+            <p>
+              The transformation side goes one step further: <code>@babel/types</code> creates a real AST node,
+              <code>@babel/generator</code> turns that node into JavaScript, and the node's source position can be used
+              to insert the generated statement.
+            </p>
+            <div class="quote"><b>Think of the project as:</b> read → parse → understand → generate → insert.</div>
+          </article>
+
+          <div class="card pipeline">
+            <div class="p">
+              <div class="pi">01</div>
+              <div><strong>Read source</strong><span>fs.readFileSync()</span></div>
+            </div>
+            <div class="down">↓</div>
+            <div class="p">
+              <div class="pi">02</div>
+              <div><strong>Parse</strong><span>@babel/parser</span></div>
+            </div>
+            <div class="down">↓</div>
+            <div class="p">
+              <div class="pi">03</div>
+              <div><strong>Inspect AST</strong><span>ast.program.body</span></div>
+            </div>
+            <div class="down">↓</div>
+            <div class="p">
+              <div class="pi">04</div>
+              <div><strong>Generate / Insert</strong><span>@babel/types + generator</span></div>
+            </div>
           </div>
         </div>
       </div>
