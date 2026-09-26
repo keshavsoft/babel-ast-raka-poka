@@ -2,20 +2,12 @@
 
 # 🧬 Babel AST — Raka Poka
 
+### Read JavaScript as structure — not just text.
+
 <p>
-  <b>Transforming JavaScript Abstract Syntax Trees with Babel.</b>
+  <b>A practical Node.js playground for learning, inspecting, generating, and transforming JavaScript Abstract Syntax Trees with Babel.</b>
 </p>
-<p>
-  <a href="https://github.com/keshavsoft/babel-ast-raka-poka">
-    <img src="https://img.shields.io/badge/GitHub-babel--ast--raka--poka-181717?style=for-the-badge&logo=github" alt="GitHub">
-  </a>
-  <a href="https://keshavsoft.github.io/babel-ast-raka-poka/">
-    <img src="https://img.shields.io/badge/📖%20Documentation-GitHub%20Pages-6366f1?style=for-the-badge" alt="Documentation">
-  </a>
-  <a href="https://www.npmjs.com/search?q=babel-ast-raka-poka">
-    <img src="https://img.shields.io/badge/📦%20NPM-Search-ea4aaa?style=for-the-badge&logo=npm" alt="NPM">
-  </a>
-</p>
+
 
 </div>
 
@@ -375,7 +367,7 @@ node.type
 
 to understand what construct it is processing.
 
-Babel's AST specification defines nodes such as `Program`, `ImportDeclaration`, `VariableDeclaration`, `ExpressionStatement`, `IfStatement`, `CallExpression`, and many others.
+Babel's AST specification defines nodes such as `Program`, `ImportDeclaration`, `VariableDeclaration`, `ExpressionStatement`, `IfStatement`, `CallExpression`, and many others. citeturn0search0
 
 ---
 
@@ -580,6 +572,24 @@ v3
 v10
 ```
 
+This makes the repository useful as an engineering story:
+
+```text
+Simple AST experiment
+        ↓
+More node inspection
+        ↓
+File-based processing
+        ↓
+Node handlers
+        ↓
+Structured processing
+        ↓
+More advanced experiments
+```
+
+The version folders should therefore be viewed as **learning and development milestones**, not simply duplicate implementations.
+
 ---
 
 # 📚 Useful Babel References
@@ -623,9 +633,22 @@ The journey is:
 
 Once JavaScript is represented as an AST, a developer tool can reason about the actual structure of the program.
 
-## License
+That is the foundation behind many modern JavaScript tooling systems.
 
-ISC
-## KeshavSoft
+---
 
-Built and maintained as part of the KeshavSoft component ecosystem.
+<div align="center">
+
+## ⚡ Parse. Understand. Generate. Automate.
+
+**Babel AST — Raka Poka**
+
+<p>
+  <a href="https://keshavsoft.github.io/babel-ast-raka-poka/">📖 Documentation</a>
+  ·
+  <a href="https://github.com/keshavsoft/babel-ast-raka-poka">◇ GitHub</a>
+  ·
+  <a href="https://www.npmjs.com/search?q=babel-ast-raka-poka">📦 NPM</a>
+</p>
+
+</div>
